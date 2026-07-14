@@ -1,1 +1,988 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Event Checklist Template</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #000;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 0;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .saved-events {
+            margin-top: 15px;
+        }
+
+        .saved-events label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .saved-events-select {
+            display: flex;
+            gap: 10px;
+        }
+
+        .saved-events-select select {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .event-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .progress-count {
+            font-size: 18px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .step-item.completed {
+            background: #f0fdf4;
+            border-left-color: #48bb78;
+        }
+
+        .step-item:hover {
+            background: #f1f5ff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .step-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+            word-break: break-word;
+        }
+
+        .step-item.completed .step-text {
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .step-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+            background: white;
+            border: 1px solid #ddd;
+        }
+
+        .action-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .action-btn.delete:hover {
+            background: #f56565;
+            border-color: #f56565;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .modal-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .completion-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .completion-modal.show {
+            display: flex;
+        }
+
+        .completion-content {
+            text-align: center;
+            animation: slideUp 0.5s ease;
+        }
+
+        .completion-message {
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            margin-top: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .completion-image {
+            max-width: 90vw;
+            max-height: 70vh;
+            object-fit: contain;
+            margin-bottom: 20px;
+        }
+
+        .completion-close-btn {
+            margin-top: 30px;
+            padding: 12px 24px;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .completion-close-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background: #cbd5e0;
+        }
+
+        .copy-feedback {
+            display: none;
+            padding: 12px;
+            background: #f0fdf4;
+            border: 1px solid #48bb78;
+            border-radius: 6px;
+            color: #22863a;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .copy-feedback.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header-controls {
+                flex-direction: column;
+            }
+
+            .input-group {
+                min-width: 100%;
+            }
+
+            .step-item {
+                flex-wrap: wrap;
+            }
+
+            .step-actions {
+                order: 3;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .step-text {
+                order: 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Live Event Checklist Template</h1>
+
+            <div class="header-controls">
+                <div class="input-group">
+                    <label for="eventName">Event Name</label>
+                    <input type="text" id="eventName" placeholder="Enter event name (e.g., Game 5 NBA Finals)">
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <div class="input-group">
+                    <label for="completionImage">Completion Graphic (Optional)</label>
+                    <input type="file" id="completionImage" accept="image/*">
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <button class="btn btn-primary" onclick="saveEvent()">💾 Save Event</button>
+                <button class="btn btn-secondary" onclick="generateShareableLink()">🔗 Generate Shareable Link</button>
+                <button class="btn btn-danger" onclick="resetChecklist()">🔄 Reset All Checks</button>
+            </div>
+
+            <div class="saved-events">
+                <label for="loadEvent">Load Saved Event</label>
+                <div class="saved-events-select">
+                    <select id="loadEvent" onchange="loadEvent(this.value)">
+                        <option value="">-- Select a saved event --</option>
+                    </select>
+                    <button class="btn btn-danger btn-sm" onclick="deleteEvent()" id="deleteEventBtn" style="display: none;">🗑️ Delete</button>
+                </div>
+            </div>
+
+            <div class="copy-feedback" id="copyFeedback">✓ Link copied to clipboard!</div>
+        </div>
+
+        <div class="event-panel">
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span class="progress-text">Progress</span>
+                    <span class="progress-count"><span id="completedCount">0</span>/<span id="totalCount">43</span> Completed</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="steps-container" id="stepsContainer"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="addStepModal">
+        <div class="modal-content">
+            <div class="modal-header">Add New Step</div>
+            <input type="text" id="newStepText" class="modal-input" placeholder="Enter step description" autofocus>
+            <div class="modal-actions">
+                <button class="btn btn-cancel" onclick="closeAddStepModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="confirmAddStep()">Add Step</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="completion-modal" id="completionModal">
+        <div class="completion-content">
+            <img id="completionImageDisplay" class="completion-image" style="display: none;">
+            <div class="completion-message">🎉 EVENT wrapped up! 🎉</div>
+            <button class="completion-close-btn" onclick="closeCompletionModal()">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        const defaultSteps = [
+            "Open LED Event you are running",
+            "Confirm a zixi input is set already for your event (preferably 24 hours prior)",
+            "Duck automation pre event",
+            "Duck automation post event",
+            "Set Lexi Live Topic Model to appropriate event",
+            "If necessary, Click on Start Zixi button on dash",
+            "Reach out to vendor for ip info/Touch base on Bridge or slack",
+            "Remove MIMs or Add Mims policy for respective Channel(s)",
+            "Test feed on pop up/unused channel for breaks, mute, etc. (make sure to change your output on dash)",
+            "Click Start Alta Encoder button on Dash",
+            "Ensure your Egress Encoder is on, if not, click on Start Egress Encoder button on Dash",
+            "Groom Source by clicking Groom button",
+            "Start DVE Encoder",
+            "Configure DVE Encoder",
+            "Log into DVE Encoder and Probe PIDs",
+            "Verify Audio Out of DVE Encoder via VLC",
+            "Confirm Primary and Backup windows are highlighted Green showing successful Groom",
+            "Turn on Youtube Feed by clicking Start Youtube button",
+            "Start Lexi Live Captions button 5 minutes prior to Event going Live",
+            "Run opening ad breaks",
+            "Click on respective Simulcast buttons according to LED (OFFPlat/CA, OTA)",
+            "LIVE ON",
+            "LIVE ON for Molotove and check Egress encoder",
+            "Check events for MIMs policies being activated if necessary",
+            "Check OTA is successfully being simulcasted",
+            "Check Off Platform is successfully being simulcasted",
+            "Check Canada is successfully being simulcasted",
+            "Run Opening Splice after Opening Breaks",
+            "Turn on appropriate Logo for Live Event (Left, Right, etc.)",
+            "Update respective Slack Channels (safespace, etc.)",
+            "Run L-bar squeeze back",
+            "Run Scoreboard graphic",
+            "Run L3 graphic",
+            "Run halftime ads",
+            "Run Closing ads",
+            "LIVE OFF",
+            "Stop Youtube",
+            "Revert respective Simulcasts (Revert Simulcast ALL/OFFPLat ONLY, etc)",
+            "Turn off DVE Encoder",
+            "Apply Mims if necessary / END Policy",
+            "Set Egress to Automate Shutdown",
+            "Stop Lexi Live Captions",
+            "Stop Alta Encoders"
+        ];
+
+        let currentSteps = [...defaultSteps];
+        let currentAddIndex = -1;
+        let completionImageUrl = null;
+
+        function checkCompletion() {
+            const total = currentSteps.length;
+            const completed = currentSteps.filter((_, i) => localStorage.getItem(`step-${i}-checked`) === 'true').length;
+
+            if (completed === total && total > 0) {
+                showCompletionModal();
+            }
+        }
+
+        function showCompletionModal() {
+            const modal = document.getElementById('completionModal');
+            const imageDisplay = document.getElementById('completionImageDisplay');
+
+            if (completionImageUrl) {
+                imageDisplay.src = completionImageUrl;
+                imageDisplay.style.display = 'block';
+            }
+
+            modal.classList.add('show');
+        }
+
+        function closeCompletionModal() {
+            document.getElementById('completionModal').classList.remove('show');
+        }
+
+        function initializePage() {
+            loadFromURL();
+            renderSteps();
+            updateProgress();
+            loadSavedEvents();
+            setupImageUpload();
+        }
+
+        function setupImageUpload() {
+            document.getElementById('completionImage').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        completionImageUrl = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function renderSteps() {
+            const container = document.getElementById('stepsContainer');
+            container.innerHTML = '';
+
+            currentSteps.forEach((step, index) => {
+                const stepDiv = document.createElement('div');
+                stepDiv.className = 'step-item';
+                stepDiv.id = `step-${index}`;
+                stepDiv.dataset.index = index;
+
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.className = 'step-checkbox';
+                checkbox.checked = localStorage.getItem(`step-${index}-checked`) === 'true';
+                checkbox.onchange = () => {
+                    toggleStep(index);
+                };
+
+                const stepText = document.createElement('span');
+                stepText.className = 'step-text';
+                stepText.textContent = step;
+
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'step-actions';
+
+                // Move Up Button
+                const moveUpBtn = document.createElement('button');
+                moveUpBtn.className = 'action-btn';
+                moveUpBtn.textContent = '↑';
+                moveUpBtn.title = 'Move up';
+                moveUpBtn.onclick = () => moveStep(index, -1);
+                moveUpBtn.disabled = index === 0;
+
+                // Move Down Button
+                const moveDownBtn = document.createElement('button');
+                moveDownBtn.className = 'action-btn';
+                moveDownBtn.textContent = '↓';
+                moveDownBtn.title = 'Move down';
+                moveDownBtn.onclick = () => moveStep(index, 1);
+                moveDownBtn.disabled = index === currentSteps.length - 1;
+
+                // Add Step Button
+                const addBtn = document.createElement('button');
+                addBtn.className = 'action-btn';
+                addBtn.textContent = '+';
+                addBtn.title = 'Add step below';
+                addBtn.onclick = () => openAddStepModal(index);
+
+                // Copy Button
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'action-btn';
+                copyBtn.textContent = '📋';
+                copyBtn.title = 'Duplicate step';
+                copyBtn.onclick = () => duplicateStep(index);
+
+                // Delete Button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'action-btn delete';
+                deleteBtn.textContent = '❌';
+                deleteBtn.title = 'Delete step';
+                deleteBtn.onclick = () => deleteStep(index);
+
+                actionsDiv.appendChild(moveUpBtn);
+                actionsDiv.appendChild(moveDownBtn);
+                actionsDiv.appendChild(addBtn);
+                actionsDiv.appendChild(copyBtn);
+                actionsDiv.appendChild(deleteBtn);
+
+                stepDiv.appendChild(checkbox);
+                stepDiv.appendChild(stepText);
+                stepDiv.appendChild(actionsDiv);
+
+                if (checkbox.checked) {
+                    stepDiv.classList.add('completed');
+                }
+
+                container.appendChild(stepDiv);
+            });
+
+            updateProgress();
+            repositionProgressBar();
+        }
+
+        function toggleStep(index) {
+            const isChecked = document.querySelector(`#step-${index} .step-checkbox`).checked;
+            localStorage.setItem(`step-${index}-checked`, isChecked);
+            document.getElementById(`step-${index}`).classList.toggle('completed', isChecked);
+            updateProgress();
+            repositionProgressBar();
+            checkCompletion();
+        }
+
+        function moveStep(index, direction) {
+            if (index + direction < 0 || index + direction >= currentSteps.length) return;
+
+            // Swap steps
+            [currentSteps[index], currentSteps[index + direction]] = [currentSteps[index + direction], currentSteps[index]];
+
+            // Swap checked states
+            const currentChecked = localStorage.getItem(`step-${index}-checked`);
+            const nextChecked = localStorage.getItem(`step-${index + direction}-checked`);
+            localStorage.setItem(`step-${index}-checked`, nextChecked);
+            localStorage.setItem(`step-${index + direction}-checked`, currentChecked);
+
+            renderSteps();
+        }
+
+        function deleteStep(index) {
+            currentSteps.splice(index, 1);
+            renderSteps();
+        }
+
+        function duplicateStep(index) {
+            const stepToDuplicate = currentSteps[index];
+            currentSteps.splice(index + 1, 0, stepToDuplicate);
+            renderSteps();
+        }
+
+        function openAddStepModal(index) {
+            currentAddIndex = index;
+            document.getElementById('newStepText').value = '';
+            document.getElementById('addStepModal').classList.add('show');
+            document.getElementById('newStepText').focus();
+        }
+
+        function closeAddStepModal() {
+            document.getElementById('addStepModal').classList.remove('show');
+            currentAddIndex = -1;
+        }
+
+        function confirmAddStep() {
+            const newStepText = document.getElementById('newStepText').value.trim();
+            if (!newStepText) return;
+
+            currentSteps.splice(currentAddIndex + 1, 0, newStepText);
+            renderSteps();
+            setTimeout(() => {
+                closeAddStepModal();
+            }, 100);
+        }
+
+        document.getElementById('addStepModal').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') confirmAddStep();
+            if (e.key === 'Escape') closeAddStepModal();
+        });
+
+        function updateProgress() {
+            const total = currentSteps.length;
+            const completed = currentSteps.filter((_, i) => localStorage.getItem(`step-${i}-checked`) === 'true').length;
+
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('progressFill').style.width = (completed / total * 100) + '%';
+        }
+
+        function repositionProgressBar() {
+            const progressSection = document.querySelector('.progress-section');
+            const container = document.getElementById('stepsContainer');
+            const steps = document.querySelectorAll('.step-item');
+
+            // Find the last completed step
+            let lastCompletedIndex = -1;
+            steps.forEach((step, index) => {
+                if (step.classList.contains('completed')) {
+                    lastCompletedIndex = index;
+                }
+            });
+
+            // If there are completed steps, move progress bar after the last one
+            if (lastCompletedIndex >= 0 && lastCompletedIndex < steps.length - 1) {
+                steps[lastCompletedIndex].insertAdjacentElement('afterend', progressSection);
+            } else if (lastCompletedIndex === steps.length - 1) {
+                // All steps completed, move to end
+                container.appendChild(progressSection);
+            } else {
+                // No steps completed, move to top
+                container.insertBefore(progressSection, container.firstChild);
+            }
+        }
+
+        function saveEvent() {
+            const eventName = document.getElementById('eventName').value.trim();
+            if (!eventName) {
+                alert('Please enter an event name');
+                return;
+            }
+
+            const eventData = {
+                name: eventName,
+                steps: currentSteps,
+                checks: {}
+            };
+
+            // Save checked states
+            currentSteps.forEach((_, i) => {
+                eventData.checks[i] = localStorage.getItem(`step-${i}-checked`) === 'true';
+            });
+
+            const savedEvents = JSON.parse(localStorage.getItem('savedEvents') || '{}');
+            savedEvents[eventName] = eventData;
+            localStorage.setItem('savedEvents', JSON.stringify(savedEvents));
+
+            alert(`Event "${eventName}" saved successfully!`);
+            loadSavedEvents();
+        }
+
+        function loadEvent(eventName) {
+            if (!eventName) return;
+
+            const savedEvents = JSON.parse(localStorage.getItem('savedEvents') || '{}');
+            const eventData = savedEvents[eventName];
+
+            if (!eventData) return;
+
+            document.getElementById('eventName').value = eventName;
+            currentSteps = [...eventData.steps];
+
+            // Clear all checks
+            for (let i = 0; i < 100; i++) {
+                localStorage.removeItem(`step-${i}-checked`);
+            }
+
+            // Load checks
+            Object.entries(eventData.checks).forEach(([index, isChecked]) => {
+                if (isChecked) {
+                    localStorage.setItem(`step-${index}-checked`, 'true');
+                }
+            });
+
+            renderSteps();
+            document.getElementById('deleteEventBtn').style.display = 'inline-flex';
+        }
+
+        function deleteEvent() {
+            const eventName = document.getElementById('eventName').value.trim();
+            if (!eventName) return;
+
+            if (confirm(`Delete event "${eventName}"?`)) {
+                const savedEvents = JSON.parse(localStorage.getItem('savedEvents') || '{}');
+                delete savedEvents[eventName];
+                localStorage.setItem('savedEvents', JSON.stringify(savedEvents));
+
+                document.getElementById('eventName').value = '';
+                currentSteps = [...defaultSteps];
+
+                // Clear all checks
+                for (let i = 0; i < 100; i++) {
+                    localStorage.removeItem(`step-${i}-checked`);
+                }
+
+                renderSteps();
+                loadSavedEvents();
+                document.getElementById('deleteEventBtn').style.display = 'none';
+            }
+        }
+
+        function loadSavedEvents() {
+            const savedEvents = JSON.parse(localStorage.getItem('savedEvents') || '{}');
+            const select = document.getElementById('loadEvent');
+
+            // Keep the default option
+            const defaultOption = select.options[0];
+            select.innerHTML = '';
+            select.appendChild(defaultOption);
+
+            Object.keys(savedEvents).forEach(eventName => {
+                const option = document.createElement('option');
+                option.value = eventName;
+                option.textContent = eventName;
+                select.appendChild(option);
+            });
+        }
+
+        function generateShareableLink() {
+            const eventName = document.getElementById('eventName').value.trim();
+            if (!eventName) {
+                alert('Please enter an event name');
+                return;
+            }
+
+            const eventData = {
+                name: eventName,
+                steps: currentSteps,
+                checks: {}
+            };
+
+            // Save checked states
+            currentSteps.forEach((_, i) => {
+                eventData.checks[i] = localStorage.getItem(`step-${i}-checked`) === 'true';
+            });
+
+            const encoded = btoa(JSON.stringify(eventData));
+            const shareLink = window.location.href.split('?')[0].split('#')[0] + '?event=' + encoded;
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(shareLink).then(() => {
+                const feedback = document.getElementById('copyFeedback');
+                feedback.classList.add('show');
+                setTimeout(() => feedback.classList.remove('show'), 3000);
+            });
+        }
+
+        function loadFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            const eventParam = params.get('event');
+
+            if (eventParam) {
+                try {
+                    const eventData = JSON.parse(atob(eventParam));
+                    document.getElementById('eventName').value = eventData.name;
+                    currentSteps = [...eventData.steps];
+
+                    // Clear all checks
+                    for (let i = 0; i < 100; i++) {
+                        localStorage.removeItem(`step-${i}-checked`);
+                    }
+
+                    // Load checks
+                    Object.entries(eventData.checks).forEach(([index, isChecked]) => {
+                        if (isChecked) {
+                            localStorage.setItem(`step-${index}-checked`, 'true');
+                        }
+                    });
+
+                    renderSteps();
+                } catch (e) {
+                    console.error('Failed to load event from URL', e);
+                }
+            }
+        }
+
+        function resetChecklist() {
+            if (confirm('Reset all checkmarks?')) {
+                for (let i = 0; i < 100; i++) {
+                    localStorage.removeItem(`step-${i}-checked`);
+                }
+                renderSteps();
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', initializePage);
+    </script>
+</body>
+</html>
+
